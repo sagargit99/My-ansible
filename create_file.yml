@@ -1,0 +1,9 @@
+---
+- name: This playbook create file on targets
+  hosts: all
+  become: true
+  tasks:
+   - name: creating file
+     file:
+        path: /home/ansadmin/test
+        state: absent

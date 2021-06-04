@@ -1,0 +1,37 @@
+---
+- name: This playbook installs httpd  using when
+  hosts: all
+  become: true
+  tasks:
+   - name: installing httpd on target servers
+     yum:
+      name: httpd
+      state: installed
+     when: ansible_os_family == "RedHat"
+     notify: start apache
+
+   - name: installing httpd on target servers
+     apt:
+      name: apache2
+      state: present
+     when: ansible_os_family == "Debian"
+     notify: start apache2
+
+   - name: copying html file
+     copy:
+        src:  /opt/ansible/index.html
+        dest: /var/www/html
+        mode: 0755 
+
+   handlers:
+    - name: starting the services
+     service:
+      name: httpd
+      state: started
+      when: ansible_os_family == "RedHat"
+
+    - name: starting the services
+      service:
+       name: apache2
+       state: started
+      when: ansible_os_family == "Debian"

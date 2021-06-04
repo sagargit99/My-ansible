@@ -1,0 +1,13 @@
+---
+- name: This playbook creates a Apache server
+  hosts: webservers
+  become: true
+  tasks:
+  - name: Creating Apache server
+    yum:
+       name: httpd
+       state: present
+  - name: starting the Apache services
+    service:
+        name: httpd
+        state: started

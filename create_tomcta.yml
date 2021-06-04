@@ -1,0 +1,35 @@
+---
+ - name: This playbook install the apache tomcat
+   hosts: all
+   become: true
+   tasks:
+    - name: installing java
+      yum: 
+        name: java
+        state: installed
+      when: ansible_os_family == "RedHat"
+
+    - name: installing java on ubuntu
+      apt:
+        name: default -jdk
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: installing tomcat using url
+      get_url:
+        url: http://mirrors.fibergrid.in/apache/tomcat/tomcat-8/v8.5.35/bin/apache-tomcat-8.5.35.tar.gz
+        dest: /opt
+
+    - name: unarchive zip file
+      unarchive:
+         src: /opt/apache-tomcat-8.5.50.tar.gz
+         dest: /opt
+         remote_src: yes
+    - name: permissions to file
+      file:
+       path: /opt/apache-tomcat-8.5.50/bin/startup.sh
+       mode: 0777
+    - name: starting the  tomcat services
+      shell: nohup ./startup.sh
+      args:
+         chdir: /opt/apache-tomcat-8.5.50/bin
